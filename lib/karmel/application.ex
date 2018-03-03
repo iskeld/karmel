@@ -11,7 +11,7 @@ defmodule Karmel.Application do
     # List all child processes to be supervised
     children = [
       Karmel.Config,
-      Plug.Adapters.Cowboy.child_spec(:http, Karmel.Web.Handler, [], port: port)
+      Plug.Adapters.Cowboy.child_spec(:http, Karmel.Web.Plug, [], port: port)
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
