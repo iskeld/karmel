@@ -6,7 +6,7 @@ defmodule Karmel.Web.TokenValidator do
   def init([]), do: []
 
   def call(conn, _opts) do
-    token = Karmel.Config.app_token()   
+    token = Karmel.Config.app_token()
 
     case conn.body_params do
       %{"token" => ^token} -> conn

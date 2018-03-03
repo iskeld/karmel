@@ -21,14 +21,16 @@ defmodule Karmel.Web.TokenValidatorTest do
   end
 
   test "raises for unfetched body" do
-    conn = conn(:post, "/") 
-    assert_raise RuntimeError, "Unfetched", fn -> 
+    conn = conn(:post, "/")
+
+    assert_raise RuntimeError, "Unfetched", fn ->
       TokenValidator.call(conn, "")
     end
   end
 
   test "returns 401 for invalid token" do
-    conn = conn(:post, "/", request("foo")) 
+    conn =
+      conn(:post, "/", request("foo"))
       |> call()
 
     assert conn.state == :sent
@@ -38,7 +40,9 @@ defmodule Karmel.Web.TokenValidatorTest do
 
   test "valid token" do
     body = request(Karmel.Config.app_token())
-    conn = conn(:post, "/", body) 
+
+    conn =
+      conn(:post, "/", body)
       |> call()
 
     assert conn.state == :sent
