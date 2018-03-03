@@ -4,4 +4,4 @@ use Mix.Config
 
 config :karmel, app_token: "TEST_TOKEN"
 
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
