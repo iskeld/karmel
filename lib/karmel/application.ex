@@ -6,10 +6,12 @@ defmodule Karmel.Application do
   use Application
 
   def start(_type, _args) do
+    port = 4001
+
     # List all child processes to be supervised
     children = [
-      # Starts a worker by calling: Karmel.Worker.start_link(arg)
-      # {Karmel.Worker, arg},
+      Karmel.Config,
+      Plug.Adapters.Cowboy.child_spec(:http, Karmel.Web.Handler, [], port: port)
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
