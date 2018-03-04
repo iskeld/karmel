@@ -3,9 +3,7 @@ defmodule Karmel.Parser do
   This module provides command parsing functions
   """
 
-  @type userid :: String.t()
-
-  @type karma :: {userid, integer}
+  @type karma :: {Karmel.Request.userid(), integer}
 
   @karma_regex ~R/<@(\w+)>:?\s*(-{2,6}|\+{2,6})/
 
@@ -19,7 +17,7 @@ defmodule Karmel.Parser do
       iex> Karmel.Parser.parse("<@U001>: info", "U001")
       :info
   """
-  @spec parse(String.t(), userid) :: :info | :reset | {:update, [karma]} | nil
+  @spec parse(String.t(), Karmel.Request.userid()) :: :info | :reset | {:update, [karma]} | nil
   def parse(message, my_id) do
     cond do
       message =~ ~r/^\s*<@#{my_id}>:?\s*(?:info)?\s*$/ ->

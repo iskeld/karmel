@@ -1,5 +1,8 @@
 defmodule Karmel.Web.Handler do
+  require Logger
   import Plug.Conn
+
+  @behaviour Plug
 
   def init(_), do: []
 
@@ -16,6 +19,7 @@ defmodule Karmel.Web.Handler do
         raise "Unfetched"
 
       _ ->
+        Logger.warn("Unexpected or missing event type #{inspect(conn.body_params)}")
         send_ok(conn)
     end
   end
@@ -36,6 +40,7 @@ defmodule Karmel.Web.Handler do
   end
 
   defp handle_url_verification(conn, _) do
+    Logger.warn("missing challenge from #{inspect(conn.remote_ip)}")
     conn
     |> send_resp(401, "missing challenge")
     |> halt()
