@@ -127,4 +127,16 @@ defmodule Karmel.SlackTest do
              text: "you will be downvoted <@U87654321> --"
            }
   end
+
+  test "returns error for struct without event" do
+    evt = %{"team_id" => "T123"}
+
+    assert :error = parse_event(evt)
+  end
+
+  test "returns error for malformed event" do
+    evt = %{"team_id" => "T123", "event" => %{"channel" => "C123", "type" => "message"}}
+
+    assert :error = parse_event(evt)
+  end
 end
