@@ -16,6 +16,9 @@ defmodule Karmel.Parser do
       
       iex> Karmel.Parser.parse("<@U001>: info", "U001")
       :info
+
+      iex> Karmel.Parser.parse("congratulations <@U002> ++++", "U001")
+      {:update, [{"U002", 3}]}
   """
   @spec parse(String.t(), Karmel.Request.userid()) :: :info | :reset | {:update, [karma]} | nil
   def parse(message, my_id) do

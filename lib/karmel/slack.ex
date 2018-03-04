@@ -1,4 +1,12 @@
 defmodule Karmel.Slack do
+  @moduledoc """
+  Provide utility functions to interact with Slack APIs
+  """
+
+  @doc """
+  Tries to parse the body of Slack Event API request into `Karmel.Request.t()`.
+  On success returns tuple `{:ok, request}`, otherwise returns `:error`.
+  """
   @spec parse_event(map()) :: {:ok, Karmel.Request.t()} | :error
   def parse_event(%{"team_id" => team_id, "event" => event}) do
     case extract_event(event) do

@@ -1,6 +1,7 @@
 defmodule Karmel.ParserTest do
   use ExUnit.Case, async: true
   import Karmel.Parser
+  doctest Karmel.Parser
 
   @my_id "U1J28HCKC"
 
