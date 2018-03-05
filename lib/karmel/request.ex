@@ -18,8 +18,9 @@ defmodule Karmel.Request do
     user_id: userid(),
     channel_id: channelid(),
     thread_id: threadid(),
+    is_direct: boolean(),
     text: String.t()
   }
 
-  defstruct [:team_id, :user_id, :channel_id, :thread_id, :text]
+  defstruct [:team_id, :user_id, :channel_id, :thread_id, :is_direct, :text]
 end

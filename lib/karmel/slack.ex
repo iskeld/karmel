@@ -57,6 +57,19 @@ defmodule Karmel.Slack do
 
   @spec request(String.t(), String.t(), String.t()) :: Karmel.Request.t()
   defp request(user, channel, text) do
-    %Karmel.Request{user_id: user, channel_id: channel, text: text, team_id: "todo"}
+    is_direct = is_direct_message?(channel)
+
+    %Karmel.Request{
+      user_id: user,
+      channel_id: channel,
+      text: text,
+      is_direct: is_direct,
+      team_id: "todo"
+    }
   end
+
+  @spec is_direct_message?(String.t()) :: boolean()
+  # TODO: better differentiate between private and non private channels
+  defp is_direct_message?("D" <> _), do: true
+  defp is_direct_message?(_), do: false
 end
