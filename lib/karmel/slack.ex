@@ -1,6 +1,6 @@
 defmodule Karmel.Slack do
   @moduledoc """
-  Provide utility functions to interact with Slack APIs
+  Provides utility functions to interact with Slack APIs
   """
 
   @doc """
@@ -29,7 +29,7 @@ defmodule Karmel.Slack do
         "subtype" => "file_comment",
         "comment" => %{"comment" => text, "user" => user}
       } ->
-        {:ok, %Karmel.Request{user_id: user, channel_id: channel, text: text}}
+        {:ok, request(user, channel, text)}
 
       %{
         "channel" => channel,
@@ -37,10 +37,10 @@ defmodule Karmel.Slack do
         "subtype" => "file_share",
         "file" => %{"initial_comment" => %{"comment" => text, "user" => user}}
       } ->
-        {:ok, %Karmel.Request{user_id: user, channel_id: channel, text: text}}
+        {:ok, request(user, channel, text)}
 
       %{"channel" => channel, "text" => text, "type" => "message", "user" => user} ->
-        result = %Karmel.Request{user_id: user, channel_id: channel, text: text}
+        result = request(user, channel, text)
 
         if Map.has_key?(evt, "thread_ts") do
           {:ok, %{result | thread_id: evt["thread_ts"]}}
@@ -54,4 +54,9 @@ defmodule Karmel.Slack do
   end
 
   defp extract_event(_), do: :error
+
+  @spec request(String.t(), String.t(), String.t()) :: Karmel.Request.t()
+  defp request(user, channel, text) do
+    %Karmel.Request{user_id: user, channel_id: channel, text: text, team_id: "todo"}
+  end
 end

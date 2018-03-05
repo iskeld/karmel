@@ -13,7 +13,7 @@ defmodule Karmel.Request do
   @type threadid :: String.t() | nil
 
   @typedoc "Represents request from Slack"
-  @type t :: %__MODULE__ {
+  @type t :: %__MODULE__{
     team_id: teamid(),
     user_id: userid(),
     channel_id: channelid(),

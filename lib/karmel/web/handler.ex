@@ -28,7 +28,14 @@ defmodule Karmel.Web.Handler do
     send_resp(conn, 200, "")
   end
 
-  defp handle_event(_map) do
+  defp handle_event(evt) when is_map(evt) do
+    case Karmel.Slack.parse_event(evt) do
+      {:ok, request} ->
+        nil
+      :error ->
+        Logger.warn("Malformed event #{inspect(evt)}")
+        nil
+    end
   end
 
   defp handle_url_verification(conn, %{"challenge" => challenge}) do
@@ -41,6 +48,7 @@ defmodule Karmel.Web.Handler do
 
   defp handle_url_verification(conn, _) do
     Logger.warn("missing challenge from #{inspect(conn.remote_ip)}")
+
     conn
     |> send_resp(401, "missing challenge")
     |> halt()
