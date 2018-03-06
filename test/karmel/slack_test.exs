@@ -22,7 +22,33 @@ defmodule Karmel.SlackTest do
              user_id: "U1234A5BC",
              channel_id: "C3ABCD234",
              thread_id: nil,
+             is_direct: false,
              text: "let's add <@U12345678> ++"
+           }
+  end
+
+  test "parses direct message" do
+    evt = %{
+      "event" => %{
+        "channel" => "D3ABCD234",
+        "text" => "version",
+        "type" => "message",
+        "user" => "U1234A5BC"
+      },
+      "team_id" => "T123ABCDE",
+      "token" => "randomslacktoken",
+      "type" => "event_callback"
+    }
+
+    assert {:ok, req} = parse_event(evt)
+
+    assert req == %Karmel.Request{
+             team_id: "T123ABCDE",
+             user_id: "U1234A5BC",
+             channel_id: "D3ABCD234",
+             thread_id: nil,
+             is_direct: true,
+             text: "version"
            }
   end
 
@@ -50,6 +76,7 @@ defmodule Karmel.SlackTest do
              user_id: "U1234A5BC",
              channel_id: "C3ABCD234",
              thread_id: "1519768453.000455",
+             is_direct: false,
              text: "now in thread <@U12345678> ++ yes"
            }
   end
@@ -83,6 +110,7 @@ defmodule Karmel.SlackTest do
              user_id: "U1234A5BC",
              channel_id: "C3ABCD234",
              thread_id: nil,
+             is_direct: false,
              text: "let's give <@U12345678> ++"
            }
   end
@@ -123,7 +151,9 @@ defmodule Karmel.SlackTest do
              team_id: "T123ABCDE",
              user_id: "UABC012DE",
              channel_id: "C3ABCD234",
+             is_direct: false,
              thread_id: nil,
+             is_direct: false,
              text: "you will be downvoted <@U87654321> --"
            }
   end

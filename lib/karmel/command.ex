@@ -1,10 +1,10 @@
 defmodule Karmel.Command do
   @typedoc "How many karma points to add/subtract for given user"
-  @type karma :: {Karmel.Request.userid(), integer}
+  @type score :: {Karmel.Request.userid(), integer}
 
-  @type karmas :: [karma]
+  @type update_cmd :: {:update, %{is_cheater: boolean(), scores: [score]}}
 
-  @type command :: :info | :reset | :version | {:update, karmas}
+  @type command :: :info | :reset | :version | update_cmd()
 
   @typedoc "Represents a bot command"
   @type t :: %__MODULE__{
