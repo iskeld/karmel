@@ -11,6 +11,7 @@ defmodule Karmel.Application do
     # List all child processes to be supervised
     children = [
       Karmel.Config,
+      Karmel.Repo,
       Plug.Adapters.Cowboy.child_spec(:http, Karmel.Web.Plug, [], port: port)
     ]
 
