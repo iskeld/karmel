@@ -153,7 +153,6 @@ defmodule Karmel.SlackTest do
              channel_id: "C3ABCD234",
              is_direct: false,
              thread_id: nil,
-             is_direct: false,
              text: "you will be downvoted <@U87654321> --"
            }
   end

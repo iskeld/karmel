@@ -29,12 +29,12 @@ defmodule Karmel.Web.Handler do
   end
 
   defp handle_event(evt) when is_map(evt) do
-    case Karmel.Slack.parse_event(evt) do
-      {:ok, request} ->
-        nil
-      :error ->
-        Logger.warn("Malformed event #{inspect(evt)}")
-        nil
+    with {:ok, request} <- Karmel.Slack.parse_event(evt),
+         true <- Karmel.CommandParser.suspected_command?(request) do
+      Karmel.BotServer.dispatch_request(request)
+    else
+      :error -> Logger.warn("Malformed event #{inspect(evt)}")
+      _ -> :ok
     end
   end
 

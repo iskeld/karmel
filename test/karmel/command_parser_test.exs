@@ -6,6 +6,28 @@ defmodule Karmel.CommandParserTest do
   @my_id "U1J28HCKC"
   @sending_user_id "U12345678"
 
+  test "suspects direct message" do
+    assert suspected_command?(%Karmel.Request{is_direct: true, text: "wtv"})
+  end
+
+  test "suspects non-direct message with points assignment" do
+    assert suspected_command?(%Karmel.Request{is_direct: false, text: "someone ++."})
+    assert suspected_command?(%Karmel.Request{is_direct: false, text: "now --."})
+  end
+
+  test "suspects non-direct message with command" do
+    assert suspected_command?(%Karmel.Request{is_direct: false, text: "version please"})
+    assert suspected_command?(%Karmel.Request{is_direct: false, text: "karmel reset"})
+    assert suspected_command?(%Karmel.Request{is_direct: false, text: "karma info"})
+  end
+
+  test "does no suspect other messages" do
+    refute suspected_command?(%Karmel.Request{is_direct: false, text: "- first"})
+    refute suspected_command?(%Karmel.Request{is_direct: false, text: "hey +"})
+    refute suspected_command?(%Karmel.Request{is_direct: false, text: ""})
+    refute suspected_command?(%Karmel.Request{is_direct: false, text: "something"})
+  end
+
   test "info" do
     assert parse_req("<@#{@my_id}>") == :info
     assert parse_req("<@#{@my_id}>:") == :info
@@ -37,7 +59,6 @@ defmodule Karmel.CommandParserTest do
 
   test "multiple updates" do
     scores = [{"U174NDB8F", 1}, {"U32132132", -3}] |> Enum.sort()
-    expected = {:update, %{is_cheater: false, scores: scores}}
     msg = "<@U32132132> ---- and <@U174NDB8F>: ++"
 
     assert {:update, %{is_cheater: false, scores: new_scores}} = parse_req(msg)
@@ -98,8 +119,8 @@ defmodule Karmel.CommandParserTest do
 
   defp parse_req(msg) do
     case parse(req(msg), @my_id) do
+      {:ok, %Karmel.Command{command: cmd}} -> cmd
       nil -> nil
-      %Karmel.Command{command: cmd} -> cmd
     end
   end
 

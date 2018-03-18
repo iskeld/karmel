@@ -10,8 +10,10 @@ defmodule Karmel.Application do
 
     # List all child processes to be supervised
     children = [
+      Karmel.BotRegistry.child_spec(),
       Karmel.Config,
       Karmel.Repo,
+      Karmel.BotsSupervisor,
       Plug.Adapters.Cowboy.child_spec(:http, Karmel.Web.Plug, [], port: port)
     ]
 

@@ -8,6 +8,16 @@ defmodule Karmel.CommandParser do
   @karma_regex ~R/<@(\w+)>:?\s*(-{2,6}|\+{2,6})/
 
   @doc """
+  Checks if the given request might be a command (contains ++, -- or other bot commands)
+  """
+  @spec suspected_command?(Karmel.Request.t()) :: true | false
+  def suspected_command?(%Karmel.Request{is_direct: true}), do: true
+
+  def suspected_command?(%Karmel.Request{text: text}) do
+    text =~ "++" || text =~ "--" || text =~ "info" || text =~ "version" || text =~ "reset"
+  end
+
+  @doc """
   Parses the given `message` and returns its type.
   If the message is the points assignment returns the assignments.
   `my_id` is the bot id to distinguish whether the bot is mentioned.
@@ -31,6 +41,9 @@ defmodule Karmel.CommandParser do
 
       text =~ ~r/^\s*<@#{bot_id}>:?\s*(?:reset)?\s*$/ ->
         :reset
+
+      text =~ ~r/^\s*<@#{bot_id}>:?\s*(?:version)?\s*$/ ->
+        :version
 
       true ->
         case extract_scores(text) do
@@ -66,7 +79,8 @@ defmodule Karmel.CommandParser do
   @spec is_not_cheater?(Karmel.Request.userid(), Karmel.Command.score()) :: boolean()
   defp is_not_cheater?(sending_user_id, {user, points}), do: sending_user_id != user or points < 0
 
-  @spec to_result(Karmel.Command.command() | nil, Karmel.Request.t()) :: nil | Karmel.Command.t()
+  @spec to_result(Karmel.Command.command() | nil, Karmel.Request.t()) ::
+          nil | {:ok, Karmel.Command.t()}
   defp to_result(nil, _request), do: nil
-  defp to_result(command, request), do: %Karmel.Command{command: command, request: request}
+  defp to_result(command, request), do: {:ok, %Karmel.Command{command: command, request: request}}
 end
