@@ -2,25 +2,23 @@ defmodule Karmel.Slack.Api.Http do
   @behaviour Karmel.Slack.Api
 
   defmodule Wrapper do
-    use HTTPotion.Base
+    use HTTPoison.Base
 
     def process_url(url) do
       "https://slack.com/api/" <> url
     end
 
-    def request(method, url, options \\ []) do
-      {token, new_options} = Keyword.pop(options, :token)
+    def process_request_headers(headers) do
+      {token, new_headers} = Keyword.pop(headers, :token)
 
-      updated_options = case token do
-        nil ->
-          new_options
-
-        _ ->
-          headers = get_json_headers(token)
-          Keyword.update(new_options, :headers, headers, fn x -> Keyword.merge(x, headers) end)
+      case token do
+        nil -> new_headers
+        _ -> get_json_headers(token) ++ new_headers
       end
+    end
 
-      super(method, url, updated_options)
+    def process_response_body(body) do
+      body |> Poison.decode!()
     end
 
     defp get_json_headers(token) do
@@ -29,6 +27,26 @@ defmodule Karmel.Slack.Api.Http do
   end
 
   def auth_test(token) do
-    Wrapper.post!("auth.test", token: token)
+    case Wrapper.post("auth.test", "", token: token) do
+      {:ok, %HTTPoison.Response{body: body}} ->
+        case body do
+          %{"ok" => true} ->
+            result =
+              body
+              |> Map.take(~w(team team_id url user user_id))
+              |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
+
+            {:ok, result}
+
+          %{"ok" => false, "error" => err} ->
+            {:error, err}
+
+          _ ->
+            {:error, "Malformed body"}
+        end
+
+      {:error, err} ->
+        {:error, Exception.message(err)}
+    end
   end
 end
