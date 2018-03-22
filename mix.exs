@@ -25,7 +25,7 @@ defmodule Karmel.MixProject do
       {:cowboy, "~> 1.1"},
       {:plug, "~> 1.4"},
       {:poison, "~> 3.1"},
-      {:httpotion, "~> 3.1"},
+      {:httpoison, "~> 1.0"},
       {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.13.5"},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
