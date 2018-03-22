@@ -1,5 +1,6 @@
 defmodule Karmel.Web.Handler do
   require Logger
+  alias Karmel.Slack.EventParser
   import Plug.Conn
 
   @behaviour Plug
@@ -29,7 +30,7 @@ defmodule Karmel.Web.Handler do
   end
 
   defp handle_event(evt) when is_map(evt) do
-    with {:ok, request} <- Karmel.Slack.parse_event(evt),
+    with {:ok, request} <- EventParser.parse_event(evt),
          true <- Karmel.CommandParser.suspected_command?(request) do
       Karmel.BotServer.dispatch_request(request)
     else

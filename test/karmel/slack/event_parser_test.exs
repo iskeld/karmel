@@ -1,5 +1,5 @@
-defmodule Karmel.SlackTest do
-  import Karmel.Slack
+defmodule Karmel.Slack.EventParserTest do
+  import Karmel.Slack.EventParser
   use ExUnit.Case, async: true
 
   test "parses regular channel message to request" do

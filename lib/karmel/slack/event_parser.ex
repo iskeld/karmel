@@ -1,6 +1,6 @@
-defmodule Karmel.Slack do
+defmodule Karmel.Slack.EventParser do
   @moduledoc """
-  Provides utility functions to interact with Slack APIs
+  Provides utility functions to parse events coming from slack
   """
 
   @doc """

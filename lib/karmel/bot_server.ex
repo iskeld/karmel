@@ -22,8 +22,13 @@ defmodule Karmel.BotServer do
   def spawn_bot(team_id) do
     team = Karmel.Team.get_by_team_id(team_id, true)
     if team != nil do
-      {:ok, pid} = Karmel.BotsSupervisor.start_child({@bot, team})
-      pid
+      case Karmel.BotsSupervisor.start_child({@bot, team}) do
+        {:ok, pid} -> pid
+        {:error, {:already_started, pid}} -> pid
+        err -> 
+          Logger.error("Cannot start team #{team_id}. Error: #{inspect(err)}")
+          nil
+      end
     else
       Logger.warn("Team #{team_id} does not exist")
       nil
