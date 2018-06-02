@@ -18,7 +18,7 @@ defmodule Karmel.BotServer do
         @bot.handle(pid, req)
         {:ok, pid}
 
-      {:error, msg} -> bot_result
+      {:error, msg} -> {:error, msg}
     end
   end
 
@@ -48,6 +48,7 @@ defmodule Karmel.BotServer do
     end
   end
 
+  @spec load_team(String.t()) :: {:ok, Ecto.Schema.t()} | {:error, :not_found}
   defp load_team(team_id) do
     case Karmel.Team.get_by_team_id(team_id, true) do
       nil -> {:error, :not_found}

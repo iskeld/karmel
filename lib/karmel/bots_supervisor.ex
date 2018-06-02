@@ -13,6 +13,10 @@ defmodule Karmel.BotsSupervisor do
     DynamicSupervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  def terminate_child(pid) do
+    DynamicSupervisor.terminate_child(__MODULE__, pid)
+  end
+
   def init(_) do
     DynamicSupervisor.init(strategy: :one_for_one)
   end

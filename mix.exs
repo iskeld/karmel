@@ -28,7 +28,8 @@ defmodule Karmel.MixProject do
       {:httpoison, "~> 1.0"},
       {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.13.5"},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:mox, "~> 0.3.2", only: :test}
     ]
   end
 end

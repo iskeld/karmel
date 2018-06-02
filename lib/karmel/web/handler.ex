@@ -1,6 +1,6 @@
 defmodule Karmel.Web.Handler do
   require Logger
-  alias Karmel.Slack.EventParser
+  alias Karmel.{CommandParser, Slack.EventParser}
   import Plug.Conn
 
   @behaviour Plug
@@ -31,11 +31,21 @@ defmodule Karmel.Web.Handler do
 
   defp handle_event(evt) when is_map(evt) do
     with {:ok, request} <- EventParser.parse_event(evt),
-         true <- Karmel.CommandParser.suspected_command?(request) do
-      Karmel.BotServer.dispatch_request(request)
+         true <- CommandParser.suspected_command?(request) do
+      Task.start(__MODULE__, :dispatch_request, [request])
     else
       :error -> Logger.warn("Malformed event #{inspect(evt)}")
       _ -> :ok
+    end
+  end
+
+  def dispatch_request(request) do
+    case Karmel.Bot.dispatch_request(request) do
+      {:error, msg} ->
+        Logger.error("dispatch_request error: #{msg}")
+        :ok
+      _ -> 
+        :ok
     end
   end
 

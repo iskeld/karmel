@@ -13,7 +13,7 @@ defmodule Karmel.Team do
     timestamps()
   end
 
-  @spec get_by_team_id(String.t(), boolean()) :: Ecto.Schema.t()
+  @spec get_by_team_id(String.t(), boolean()) :: Ecto.Schema.t() | nil | no_return()
   def get_by_team_id(team_id, with_scores) do
     query = case with_scores do
       true -> __MODULE__ |> preload(:scores)

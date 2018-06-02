@@ -42,10 +42,9 @@ defmodule Karmel.Slack.EventParser do
       %{"channel" => channel, "text" => text, "type" => "message", "user" => user} ->
         result = request(user, channel, text)
 
-        if Map.has_key?(evt, "thread_ts") do
-          {:ok, %{result | thread_id: evt["thread_ts"]}}
-        else
-          {:ok, result}
+        case get_thread(evt) do
+          {:ok, thread_id} -> {:ok, %{result | thread_id: thread_id}}
+          _ -> {:ok, result}
         end
 
       _ ->
@@ -54,6 +53,9 @@ defmodule Karmel.Slack.EventParser do
   end
 
   defp extract_event(_), do: :error
+
+  defp get_thread(%{"thread_ts" => t}), do: {:ok, t}
+  defp get_thread(_), do: nil
 
   @spec request(String.t(), String.t(), String.t()) :: Karmel.Request.t()
   defp request(user, channel, text) do

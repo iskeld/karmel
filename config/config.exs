@@ -8,4 +8,6 @@ config :karmel, app_token: "TEST_TOKEN"
 
 config :karmel, bot: Karmel.BotImpl
 
+config :karmel, slack_api: Karmel.Slack.Api.Http
+
 import_config "#{Mix.env()}.exs"
